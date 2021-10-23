@@ -133,6 +133,10 @@ body {
     background-color: #000;
     width: 10.6vw;
     height: 2.6vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 .character-skill .h4-black{
     width: 22.6vw;
