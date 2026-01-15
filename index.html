@@ -1,42 +1,419 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
-    <meta charset="utf-8">
-    <title>另類怪談｜工作 plus+</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="stylesheet" href="css/character.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
-    
-    <script type="text/javascript">
-
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幸研計劃 - 角色圖鑑</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f9fafb;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+</head>
 <body>
-        <div class="container">
-            <div class="header">
-                <div class="header-content">
-                    <h1>user ID</h1><div><img src="img/diamond.png"><h2>coins num</h2></div>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        /**
+         * --- 數據資料配置區 ---
+         * 維護說明：若要換圖，直接修改 top.imageUrl 或 bottom.imageUrl 即可。
+         * 列表卡片會自動抓取 top.imageUrl 作為封面。
+         */
+        const COUPLES_DATA = [
+            {
+                id: 1,
+                cpName: "靈魂之章",
+                element: "佯非",
+                gradient: "from-amber-500 to-yellow-500",
+                comicUrl: "https://example.com/comic/1",
+                imgURL: "img/佯非.png", // 封面圖片網址
+                story: "完美好哥哥陸佯與單純傻氣的弟弟陸非，看似光鮮又耀眼雙胞胎，實際上兩人間的關係...",
+                top: { 
+                    name: "陸 佯", 
+                    imageUrl: "img/角色圖/陸佯.png", // 替換此處網址即可
+                    age: "21歲", height: "177cm", role: "法律系大學生", 
+                    tags: ["水瓶座", "腹黑", "代表動物藪貓"], 
+                    desc: "腦袋聰明、名列前茅，貌似太陽一樣溫暖而完美的存在，卻讓人很難看透。" 
+                },
+                bottom: { 
+                    name: "陸 非", 
+                    imageUrl: "img/角色圖/陸非.png", // 替換此處網址即可
+                    age: "21歲", height: "177.1cm", role: "建築系大學生兼打工仔", 
+                    tags: ["雙魚座", "傲嬌", "代表動物花豹"], 
+                    desc: "個性大而化之、雖然有點傻、有點自戀，但也是個陽光男孩，很好相處。" 
+                }
+            },
+            {
+                id: 2,
+                cpName: "王國之章",
+                element: "王王",
+                gradient: "from-purple-600 to-indigo-600",
+                comicUrl: "https://example.com/comic/2",
+                imgURL: "img/王王.png", // 封面圖片網址
+                story: "萬人之上的國王，背負著家族及人民的期望，但他卻有個難以啟齒的心之所向。",
+                top: { 
+                    name: "Vail． Arvid．Raglan", 
+                    imageUrl: "img/角色圖/王爵.png", // 替換此處網址即可
+                    age: "25歲", height: "179cm", role: "Ravennotiaa國的王爵", 
+                    tags: ["巨蟹座", "忠犬", "代表動物企鵝"], 
+                    desc: "貧民出身。精明幹練、做事不拖泥帶水，對下屬嚴格、對自己更嚴格。對君王絕對服從。看似一板一眼，其實性格單純。" 
+                },
+                bottom: { 
+                    name: "Ed． Aldrich．Irving", 
+                    imageUrl: "img/角色圖/王.png", // 替換此處網址即可
+                    age: "23歲", height: "173cm", role: "Ravennotiaa國的君王", 
+                    tags: ["獅子座", "反差萌", " 代表動物獅子"], 
+                    desc: "條理分明又才智具備的國王，深受國民愛戴。聰明卻有些古板，雖然一副高高在上的模樣但心地善良。" 
+                }
+            },
+            {
+                id: 3,
+                cpName: "桀驁之章",
+                element: "攔禾",
+                gradient: "from-blue-400 to-cyan-400",
+                comicUrl: "https://example.com/comic/3",
+                imgURL: "img/攔禾.png", /* 封面圖片網址 */
+                story: "一個話嘮一個寡言，文化與境遇的不同催生出一段苦痛又甜蜜的故事。",
+                top: { 
+                    name: "解 以攔", 
+                    imageUrl: "img/角色圖/解以攔.png",
+                    age: "21歲", height: "172cm", role: "新聞系大學生", 
+                    tags: ["魔羯座", "不善言詞", "S", "代表動物黑牛"], 
+                    desc: "怕冷怕麻煩。看起來很面癱，但其實是個溫柔的人。體育能力很好。起初對戀愛有點遲鈍，與錦禾交往前是個自卑的人，在感情發展的過程中才漸漸認識自己...。" 
+                },
+                bottom: { 
+                    name: "葉 錦禾", 
+                    imageUrl: "img/角色圖/葉錦禾.png",
+                    age: "21歲", height: "175cm", role: "廣播系大學生", 
+                    tags: ["雙子座", "中國湖南人", "M", "代表動物夜鶯"], 
+                    desc: "高中時來到台灣的轉學生，話嘮之外還有些毒舌，是個纖細的孩子。天生的同，因家裡反對而曾經自暴自棄。曾當過1號。" 
+                }
+            },
+            {
+                id: 4,
+                cpName: "宇航之章",
+                element: "空真",
+                gradient: "from-yellow-400 to-amber-500",
+                comicUrl: "https://example.com/comic/4",
+                imgURL: "img/空真.png", /* 封面圖片網址 */
+                story: "青春的高中校園，因一場惡作劇而交織兩個人，一場年上年下的砂糖劇！",
+                top: { 
+                    name: "早野 空", 
+                    imageUrl: "img/角色圖/早野空.png",
+                    age: "20歲", height: "177cm", role: "高中生", 
+                    tags: ["天秤座", "忠犬", "代表動物黃金獵犬"], 
+                    desc: "喜歡天空，夢想成為機師。清爽、溫柔的人，與世無爭、很會閱讀空氣。真幸的學弟。" 
+                },
+                bottom: { 
+                    name: "倉成 真幸", 
+                    imageUrl: "img/角色圖/倉成真幸.png",
+                    age: "21歲", height: "175cm", role: "高中生", 
+                    tags: ["金牛座", "健氣", "代表動物熊"], 
+                    desc: "樂觀熱情，是個吃貨。不知所措時會下意識摸摸鼻子，笑起來有酒窩。擅長的料理是咖哩，有著只要下廚什麼都能做成咖哩的技能。喜歡小動物但對毛過敏。" 
+                }
+            },
+            {
+                id: 5,
+                cpName: "生徒之章",
+                element: "修花",
+                gradient: "from-pink-400 to-rose-500",
+                comicUrl: "https://example.com/comic/5",
+                imgURL: "img/修花.png", /* 封面圖片網址 */
+                story: "不論是身份階級還是戀情都打破世俗的禁忌，活在體制內的壓抑的愛該何去何從？",
+                top: { 
+                    name: "西村 修也", 
+                    imageUrl: "img/角色圖/西村修也.png",
+                    age: "31歲", height: "187cm", role: "高中教授，理科專門", 
+                    tags: ["天秤座", "偏執", "代表動物蟒蛇"], 
+                    desc: "花澤白的在校導師。性格有點閉俗，加上強迫症因此有些難與人相處。考慮的多也因此做事十分謹慎，講求秩序。" 
+                },
+                bottom: { 
+                    name: "花澤 白", 
+                    imageUrl: "img/角色圖/花澤白.png",
+                    age: "16歲", height: "四捨五入165cm", role: "高中生", 
+                    tags: ["牡羊座", "誘受", "代表動物白兔"], 
+                    desc: "亞斯伯格症患者，喜歡裁縫、打扮，慾望非常強烈。面癱、思考模式一直線。天生的同、受到西村老師啟發前一直認為自己是女孩子。" 
+                }
+            },
+            {
+                id: 6,
+                cpName: "和諧之章",
+                element: "茂優",
+                gradient: "from-pink-400 to-rose-500",
+                comicUrl: "https://example.com/comic/5",
+                imgURL: "img/茂優.png", /* 封面圖片網址 */
+                story: "用音樂搭建起的愛語，一段壓抑淬鍊後戀情得以雨過天青嗎？",
+                top: { 
+                    name: "黑木 茂", 
+                    imageUrl: "img/角色圖/黑木茂.png",
+                    age: "29歲", height: "179cm", role: "牙醫", 
+                    tags: ["天秤座", "些微偏執", "代表動物老鷹"], 
+                    desc: "原先的個性比較不求甚解，卻因為家族壓力變得相當謹慎而穩重。家族安排被迫放棄摯愛的小提琴，往醫科發展最後於牙科畢業。求學過程壓抑痛苦，遲遲無法開花結果的戀情間接影響了性格。看著南優一長大，隨著兩人歲數增長，溺愛的程度已經超越了普通的感情。" 
+                },
+                bottom: { 
+                    name: "南 優一", 
+                    imageUrl: "img/角色圖/南優一.png",
+                    age: "22歲", height: "176cm", role: "音樂系大學生", 
+                    tags: ["巨蟹座", "些微病嬌", "代表動物鹿"], 
+                    desc: "外表乖巧，實際上因家裡的基督教信仰，在感情上十分壓抑。內心陰暗進而有自殘傾向，在與暗戀已久的隔壁哥哥兩情相悅後好轉許多。急性子，在愛人的溺愛下變得有些小任性。" 
+                }
+            },
+            {
+                id: 7,
+                cpName: "琥珀之章",
+                element: "紀悠",
+                gradient: "from-pink-400 to-rose-500",
+                comicUrl: "https://example.com/comic/5",
+                imgURL: "img/紀悠.png", /* 封面圖片網址 */
+                story: "忘年之交適用於愛情嗎？因為實習作業認識了相野悠生的出村紀人，治癒的年上年下戀情如何開展...",
+                top: { 
+                    name: "出村 紀人", 
+                    imageUrl: "img/角色圖/出村紀人.png",
+                    age: "19歲", height: "181cm", role: "資工系大學生", 
+                    tags: ["魔羯座", "強勢", "代表動物虎鯨"], 
+                    desc: "因幼時的大病導致身體較普通人虛，聽力也有些微受損。嗜零食與甜食，在腦力活上都有優秀的表現，尤其在遊戲上非常出色。在一些地方顯得自我中心，容易讓人感覺口不擇言。" 
+                },
+                bottom: { 
+                    name: "相野 悠生", 
+                    imageUrl: "img/角色圖/相野悠生.png",
+                    age: "25歲", height: "165cm", role: "博物館導覽員", 
+                    tags: ["射手座", "天然呆", "代表動物海龜"], 
+                    desc: "帶著赤子之心長大了的社會人，笑起來有梨渦。對歷史文物非常有興趣，喜歡考古。因為戀人的關係開始玩遊戲，意外的玩出天分卻只是個休閒玩家。" 
+                }
+            },
+            {
+                id: 8,
+                cpName: "花見之章",
+                element: "柚唯",
+                gradient: "from-pink-400 to-rose-500",
+                comicUrl: "https://example.com/comic/5",
+                imgURL: "img/柚唯.png", /* 封面圖片網址 */
+                story: "跨國的際遇。某日褚唯家裡的花店出現的騷亂，讓他遇見了現役刑警瀨川柚樹...",
+                top: { 
+                    name: "瀨川 柚樹", 
+                    imageUrl: "img/角色圖/瀨川柚樹.png",
+                    age: "29歲", height: "183cm", role: "刑警", 
+                    tags: ["天秤座", "正直", "代表動物黑豹"], 
+                    desc: "天生的正義感，給單親媽媽養大的他經常路見不平，順理成章進了警大。曾待過搜查一課，因個人問題回到三課服務。直男心態，也交過女朋友，異性戀的他最終被唯的溫柔和可愛給掰彎了。其實是很懶散的人。" 
+                },
+                bottom: { 
+                    name: "褚 唯", 
+                    imageUrl: "img/角色圖/褚唯.png",
+                    age: "22歲", height: "177cm", role: "繼承家裡花店的大學生", 
+                    tags: ["牡羊座", "天然呆", "代表動物豎琴海豹"], 
+                    desc: "溫柔大男孩，像花一樣的清新花博士。父親是台灣人而母親是日本人的台日混血，國中後跟著母親定居在日本。天生的同，愛上直男柚樹的那一刻還以為要單身一輩子了。" 
+                }
+            },
+            {
+                id: 9,
+                cpName: "生命之章",
+                element: "凡易",
+                gradient: "from-pink-400 to-rose-500",
+                comicUrl: "https://example.com/comic/5",
+                imgURL: "img/凡易.png", /* 封面圖片網址 */
+                story: "生與死的命題，不幸的開端帶來幸福的種子，狄凡與鄒易的電波怪奇物語。",
+                top: { 
+                    name: "狄 凡", 
+                    imageUrl: "img/角色圖/狄凡.png",
+                    age: "27歲", height: "175cm", role: "喪儀社員工", 
+                    tags: ["牡羊座", "像貓一樣的好奇心", "代表動物魟魚"], 
+                    desc: "怪異的好奇心，經常異想天開做怪異的推測和實驗。個性關係導致家庭關係不和睦，年紀很小就自己搬出來生存。不知道自己是哪裡出了問題，只知道這個世界不是那麼喜歡自己。初次遇到覺得自己很有趣的人──易，很快便陷入愛河。" 
+                },
+                bottom: { 
+                    name: "鄒 易", 
+                    imageUrl: "img/角色圖/鄒易.png",
+                    age: "25歲", height: "177cm", role: "在媽媽的賭場擔任荷官", 
+                    tags: ["水瓶座", "電波", "代表動物雪貂"], 
+                    desc: "母親是義大利人而父親是澳門人的混血，家業拓展版圖的關係來到台灣。天真得有些無知，對戀人的話言聽從計，金錢概念全無，送了一價值66萬台幣的戒指給戀人。家庭複雜，是黑道名門出身。母親去世後與現任相遇，被不合常理的他吸引，很快便走出喪母的悲傷中。" 
+                }
+            },
+            {
+                id: 10,
+                cpName: "來世之章",
+                element: "詠年",
+                gradient: "from-pink-400 to-rose-500",
+                comicUrl: "https://example.com/comic/5",
+                imgURL: "img/詠年.png", /* 封面圖片網址 */
+                story: "上一世我用生命歌頌你的名字，下一世我不會再錯過你。穿越了地獄，白詠與宋起年再度在人間相逢，轉世的他們認的出彼此嗎？",
+                top: { 
+                    name: "白 詠", 
+                    imageUrl: "img/角色圖/白詠.png",
+                    age: "28歲", height: "178cm", role: "自由工作者", 
+                    tags: ["處女座", "偏執且強勢", "代表動物吸血蝙蝠"], 
+                    desc: "嚴肅的人，喜歡深究問題，在音樂領域具有相當的執念與興趣。主要職業是攝影。個性有些難以捉摸。" 
+                },
+                bottom: { 
+                    name: "宋 起年", 
+                    imageUrl: "img/角色圖/宋起年.png",
+                    age: "26歲", height: "175cm", role: "診所營養師", 
+                    tags: ["天秤座", "濫好人", "代表動物山雀"], 
+                    desc: "好好先生，神經大條，喜愛成就他人的類型。很容易感到自卑，焦慮時依賴吃糖果舒壓。因自身個性，會莫名被反骨類型的人吸引，情感上處於弱勢。" 
+                }
+            }
+        ];
+
+        // --- 子組件 ---
+        const Icon = ({ name, size = 20, className = "" }) => {
+            useEffect(() => { lucide.createIcons(); }, [name]);
+            return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
+        };
+
+        const CharacterBox = ({ charData, type, gradient }) => (
+            <div className="flex-1 flex flex-col items-center group/char h-full">
+                <div className="relative mb-6 w-full flex justify-center">
+                    {/* 背景裝飾光暈 */}
+                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-80 md:h-80 rounded-full bg-gradient-to-br ${gradient} opacity-20 blur-3xl transition-opacity group-hover/char:opacity-40`}></div>
+                    
+                    {/* 角色圖片：現在直接讀取資料庫中的 imageUrl */}
+                    <img 
+                        src={charData.imageUrl} 
+                        alt={charData.name}
+                        className="relative z-10 h-64 md:h-[450px] w-auto object-contain drop-shadow-2xl transition-transform duration-700 group-hover/char:scale-105"
+                        onError={(e) => { e.target.src = "https://via.placeholder.com/400x600?text=No+Image"; }}
+                    />
                 </div>
-            </div>
-            <div class="main-content">
-                <div class="character-show">
-                    <img src="img/character/yong.png">
-                    <div class="character-name"><img src="img/rank-icon/SR.png"><h3>角色名稱</h3></div>
-                    <div class="character-skill"><div class="h4-white">skill</div><div class="h4-black">skill name</div></div>
-                </div>
-                <div class="character-collects">
-                    <div class="character-area">
-                        <img src="img/character/yee-icon.png">
-                        <img src="img/character/yong-icon.png">
-                        <img src="img/character/fan-icon.png">
-                        <img src="img/character/niang-icon.png">
+                <div className="relative z-20 w-full max-w-sm px-6 text-center">
+                    <div className="flex items-center gap-3 mb-3 justify-center">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-black ${type === 'TOP' ? 'bg-indigo-600 text-white' : 'bg-pink-500 text-white'}`}>
+                            {type}
+                        </span>
+                        <h2 className="text-2xl font-black text-gray-800">{charData.name}</h2>
+                    </div>
+                    <div className="flex gap-2 justify-center mb-4 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                        <span>{charData.age} • {charData.height} • {charData.role}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2 justify-center mb-6">
+                        {charData.tags.map(tag => (
+                            <span key={tag} className="text-[10px] bg-gray-100 text-gray-600 px-2 py-1 rounded-md border border-gray-200 font-bold">#{tag}</span>
+                        ))}
+                    </div>
+                    <div className="bg-white/80 backdrop-blur-sm border border-gray-100 p-4 rounded-2xl shadow-sm text-sm text-gray-600 leading-relaxed">
+                        {charData.desc}
                     </div>
                 </div>
             </div>
-            <div class="footer">
-                <div class="page-switch"><img src="img/gacha.png"><img src="img/collects.png"><img src="img/work.png"></div>
-            </div>
-        </div>
+        );
+
+        const ImmersiveDetail = ({ couple, onBack }) => {
+            return (
+                <div className="fixed inset-0 z-50 flex flex-col bg-[#fafafa] overflow-y-auto animate-fade-in">
+                    <div className="sticky top-0 z-50 w-full p-4 md:p-6 flex justify-between items-center bg-white/50 backdrop-blur-md border-b border-gray-100">
+                        <button onClick={onBack} className="flex items-center gap-2 rounded-full bg-gray-900 px-6 py-2 text-white hover:bg-indigo-600 transition-all shadow-lg">
+                            <Icon name="arrow-left" /> <span className="font-bold tracking-tighter">RETURN</span>
+                        </button>
+                        <div className="flex items-center gap-3">
+                            <span className="text-gray-400 font-mono text-xs hidden sm:block tracking-widest uppercase">Archive // {couple.element}</span>
+                            <div className={`h-2 w-2 rounded-full bg-gradient-to-r ${couple.gradient} animate-pulse`}></div>
+                        </div>
+                    </div>
+                    <div className="flex-1 container mx-auto px-4 py-8 pb-20">
+                        <div className="text-center max-w-3xl mx-auto mb-12">
+                            <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-6 tracking-tighter">{couple.cpName}</h1>
+                            <p className="text-sm md:text-base text-gray-600 leading-relaxed italic px-8 py-4 bg-gray-100 rounded-3xl border-l-2 border-r-2 border-gray-600">{couple.story}</p>
+                        </div>
+                        <div className="flex flex-col lg:flex-row items-stretch justify-center gap-12 lg:gap-0 max-w-7xl mx-auto">
+                            <CharacterBox charData={couple.top} type="TOP" gradient={couple.gradient} />
+                            <div className="hidden lg:flex flex-col items-center justify-center px-10 opacity-20">
+                                <Icon name="heart" size={32} className="text-gray-400" />
+                            </div>
+                            <CharacterBox charData={couple.bottom} type="BOTTOM" gradient={couple.gradient} />
+                        </div>
+                        <div className="mt-16 flex justify-center">
+                            <a href={couple.comicUrl} target="_blank" className={`flex items-center gap-4 py-5 px-14 rounded-2xl text-white font-black text-xl shadow-2xl hover:scale-105 transition-all bg-gradient-to-r ${couple.gradient}`}>
+                                <Icon name="book-open" /> <span>開始閱讀漫畫</span> <Icon name="external-link" size={18} />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- 主程式 ---
+        function App() {
+            const [selectedCouple, setSelectedCouple] = useState(null);
+            const [filter, setFilter] = useState('All');
+
+            const filters = ['All', '佯非', '王王', '攔禾', '空真', '修花', '茂優', '紀悠', '柚唯', '凡易', '詠年'];
+
+            return (
+                <div className="min-h-screen pb-20">
+                    <header className="container mx-auto px-6 py-12">
+                        <h1 className="text-5xl font-black tracking-tighter text-gray-900"><span className="text-indigo-600">幸研</span> 計畫</h1>
+                        <p className="text-gray-400 font-bold mt-2 tracking-[0.2em] text-[10px] uppercase">Character & Story Archive</p>
+                    </header>
+
+                    <main className="container mx-auto px-6">
+                        <div className="flex px-1 py-1 gap-3 overflow-x-auto pb-10 no-scrollbar">
+                            {filters.map(f => (
+                                <button key={f} onClick={() => setFilter(f)} className={`flex-none px-7 py-2.5 rounded-full text-xs font-black transition-all border-2 ${filter === f ? 'bg-gray-900 text-white border-gray-900 shadow-xl scale-105' : 'bg-white text-gray-400 border-gray-100 hover:border-gray-300'}`}>
+                                    {f.toUpperCase()}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                            {COUPLES_DATA.filter(c => filter === 'All' || c.element === filter).map(couple => (
+                                <div key={couple.id} onClick={() => setSelectedCouple(couple)} className="group relative h-80 cursor-pointer overflow-hidden rounded-3xl shadow-lg transition-all duration-500 hover:shadow-2xl hover:scale-[1.02]">
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${couple.gradient} opacity-90 transition-opacity duration-500 group-hover:opacity-100`}></div>
+                                    
+                                    {/* 封面預覽圖*/}
+                                    <div className="absolute transition-transform duration-500 group-hover:scale-110">
+                                        <img 
+                                            src={couple.imgURL} 
+                                            className="h-auto w-auto object-contain drop-shadow-2xl" 
+                                            alt="Preview"
+                                        />
+                                    </div>
+
+                                    <div className="absolute inset-0 p-8 flex flex-col justify-between">
+                                        <div className="flex justify-between items-start">
+                                            <span className="rounded-full bg-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md border border-white/30">
+                                                {couple.element}
+                                            </span>
+                                            <Icon name="chevron-right" className="text-white opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" />
+                                        </div>
+                                        
+                                        <div className="relative z-10">
+                                            <h3 className="text-3xl font-black text-white filter drop-shadow-2xl leading-tight mb-2">{couple.cpName}</h3>
+                                            <p className="text-white/80 text-sm font-medium filter drop-shadow-lg line-clamp-2 mb-4">{couple.story}</p>
+                                            <div className="h-1 w-12 rounded-full bg-white/50 group-hover:w-full transition-all duration-500"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </main>
+
+                    {selectedCouple && <ImmersiveDetail couple={selectedCouple} onBack={() => setSelectedCouple(null)} />}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
