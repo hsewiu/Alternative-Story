@@ -32,10 +32,13 @@
         body {
             font-family: "Cubic 11", 'Noto Sans TC', system-ui, -apple-system, "Segoe UI", sans-serif;
             background-color: #f9fafb;
+            margin: 0; /* 移除預設 margin */
         }
+
         h3 {
             font-family: 'Noto Sans TC';
         }
+        
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
@@ -64,6 +67,7 @@
                 id: 1,
                 cpName: "靈魂之章",
                 element: "佯非",
+                status: "尚未開始",
                 gradient: "from-amber-500 to-yellow-500",
                 comicUrl: "https://example.com/comic/1",
                 imgURL: "img/佯非.png", // 封面圖片網址
@@ -87,6 +91,7 @@
                 id: 2,
                 cpName: "王國之章",
                 element: "王王",
+                status: "尚未開始",
                 gradient: "from-stone-500 to-slate-500",
                 comicUrl: "https://example.com/comic/2",
                 imgURL: "img/王王.png", // 封面圖片網址
@@ -110,6 +115,7 @@
                 id: 3,
                 cpName: "桀驁之章",
                 element: "攔禾",
+                status: "尚未開始",
                 gradient: "from-sky-800 to-blue-800",
                 comicUrl: "https://example.com/comic/3",
                 imgURL: "img/攔禾.png", /* 封面圖片網址 */
@@ -133,6 +139,7 @@
                 id: 4,
                 cpName: "宇航之章",
                 element: "空真",
+                status: "尚未開始",
                 gradient: "from-cyan-300 to-emerald-300",
                 comicUrl: "https://example.com/comic/4",
                 imgURL: "img/空真.png", /* 封面圖片網址 */
@@ -156,6 +163,7 @@
                 id: 5,
                 cpName: "生徒之章",
                 element: "修花",
+                status: "尚未開始",
                 gradient: "from-blue-900 to-sky-700",
                 comicUrl: "https://example.com/comic/5",
                 imgURL: "img/修花.png", /* 封面圖片網址 */
@@ -179,6 +187,7 @@
                 id: 6,
                 cpName: "和諧之章",
                 element: "茂優",
+                status: "尚未開始",
                 gradient: "from-indigo-900 to-gray-800",
                 comicUrl: "https://example.com/comic/5",
                 imgURL: "img/茂優.png", /* 封面圖片網址 */
@@ -202,6 +211,7 @@
                 id: 7,
                 cpName: "琥珀之章",
                 element: "紀悠",
+                status: "尚未開始",
                 gradient: "from-blue-700 to-teal-500",
                 comicUrl: "https://example.com/comic/5",
                 imgURL: "img/紀悠.png", /* 封面圖片網址 */
@@ -225,6 +235,7 @@
                 id: 8,
                 cpName: "花見之章",
                 element: "柚唯",
+                status: "尚未開始",
                 gradient: "from-rose-400 to-pink-700",
                 comicUrl: "https://example.com/comic/5",
                 imgURL: "img/柚唯.png", /* 封面圖片網址 */
@@ -248,6 +259,7 @@
                 id: 9,
                 cpName: "生命之章",
                 element: "凡易",
+                status: "尚未開始",
                 gradient: "from-violet-800 to-purple-950",
                 comicUrl: "https://example.com/comic/5",
                 imgURL: "img/凡易.png", /* 封面圖片網址 */
@@ -271,6 +283,7 @@
                 id: 10,
                 cpName: "來世之章",
                 element: "詠年",
+                status: "尚未開始",
                 gradient: "from-pink-900 to-rose-300",
                 comicUrl: "https://example.com/comic/5",
                 imgURL: "img/詠年.png", /* 封面圖片網址 */
@@ -292,10 +305,57 @@
             }
         ];
 
+        //周邊區塊
+        const MERCH_DATA = [
+            {
+                id: 1,
+                title: "Line角色貼圖組合包 v1.0",
+                status: "ON SALE",
+                date: "上架中",
+                imageUrl: "https://motif121.weebly.com/uploads/2/2/1/5/22151282/5788651.png",
+                link: "http://line.me/S/sticker/1152155"
+            }/*,
+            {
+                id: 2,
+                title: "《放學後的圖書館》同人小說本",
+                status: "ON SALE",
+                date: "現貨供應中",
+                imageUrl: "https://via.placeholder.com/300x200?text=Merch+B",
+                link: "#"
+            },
+            {
+                id: 3,
+                title: "全角色主題閃粉徽章",
+                status: "NEW",
+                date: "即將上架",
+                imageUrl: "https://via.placeholder.com/300x200?text=Merch+C",
+                link: "#"
+            }*/
+        ];
+
         // --- 子組件 ---
         const Icon = ({ name, size = 20, className = "" }) => {
             useEffect(() => { lucide.createIcons(); }, [name]);
             return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
+        };
+
+        /**
+         * 狀態標籤組件
+         */
+        const StatusBadge = ({ status, size = "normal" }) => {
+            const styles = {
+                "連載中": "bg-emerald-500/90 text-white animate-pulse-soft",
+                "尚未開始": "bg-orange-500/90 text-white",
+                "已完結": "bg-gray-600/90 text-white"
+            };
+            
+            const sizeClass = size === "small" ? "px-1.5 py-0.5 text-[8px]" : "px-2 py-1 text-[10px]";
+            
+            return (
+                <span className={`${sizeClass} rounded font-black tracking-wider shadow-sm flex-none ${styles[status] || 'bg-gray-400 text-white'}`}>
+                    {status}
+                </span>
+            );
         };
 
         const CharacterBox = ({ charData, type, gradient }) => (
@@ -376,13 +436,14 @@
             const filters = ['All', '佯非', '王王', '攔禾', '空真', '修花', '茂優', '紀悠', '柚唯', '凡易', '詠年'];
 
             return (
-                <div className="min-h-screen pb-20">
+                <div className="flex flex-col min-h-screen">
+                    {/* 頂部標題區塊 */}
                     <header className="container mx-auto px-6 py-12">
                         <h1 className="text-5xl font-black tracking-tighter text-gray-900"><span className="text-indigo-600">幸研</span> 計畫</h1>
                         <p className="text-gray-400 font-bold mt-2 tracking-[0.3em] text-[10px] uppercase">Character & Story Archive</p>
                     </header>
 
-                    <main className="container mx-auto px-6">
+                    <main className="flex-1 container mx-auto px-6">
                         <div className="flex px-1 py-1 gap-3 overflow-x-auto pb-10 no-scrollbar">
                             {filters.map(f => (
                                 <button key={f} onClick={() => setFilter(f)} className={`flex-none px-7 py-2.5 rounded-full text-xs font-black transition-all border-2 ${filter === f ? 'bg-gray-900 text-white border-gray-900 shadow-xl scale-105' : 'bg-white text-gray-400 border-gray-100 hover:border-gray-300'}`}>
@@ -391,9 +452,10 @@
                             ))}
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-20">
                             {COUPLES_DATA.filter(c => filter === 'All' || c.element === filter).map(couple => (
-                                <div key={couple.id} onClick={() => setSelectedCouple(couple)} className="group relative h-80 cursor-pointer overflow-hidden rounded-3xl shadow-lg transition-all duration-500 hover:shadow-2xl hover:scale-[1.02]">
+                                <div key={couple.id} onClick={() => setSelectedCouple(couple)} className="group relative h-80 cursor-pointer overflow-hidden rounded-3xl shadow-lg transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:ring-4 hover:ring-indigo-600">
+                                    {/* 漸層背景 */}
                                     <div className={`absolute inset-0 bg-gradient-to-br ${couple.gradient} opacity-90 transition-opacity duration-500 group-hover:opacity-100`}></div>
                                     
                                     {/* 封面預覽圖*/}
@@ -414,15 +476,62 @@
                                         </div>
                                         
                                         <div className="relative z-10">
-                                            <h3 className="text-3xl font-black text-white filter drop-shadow-2xl leading-tight mb-2">{couple.cpName}</h3>
-                                            <p className="text-white/80 text-sm font-medium filter drop-shadow-lg line-clamp-2 mb-4">{couple.story}</p>
+                                            {/* 狀態標籤移到名稱後方 */}
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <h3 className="text-3xl font-black text-white filter drop-shadow-2xl leading-tight">{couple.cpName}</h3>
+                                                <StatusBadge status={couple.status} size="small" />
+                                            </div>
+                                            <p className="text-white/80 text-sm font-medium filter text-shadow-sm line-clamp-2 mb-4">{couple.story}</p>
                                             <div className="h-1 w-12 rounded-full bg-white/50 group-hover:w-full transition-all duration-500"></div>
                                         </div>
                                     </div>
                                 </div>
                             ))}
                         </div>
+                        {/* 周邊公告區塊 */}
+                        <section className="mb-20">
+                            <div className="flex items-center gap-4 mb-8">
+                                <h2 className="text-3xl font-black tracking-tight text-gray-900">最新周邊公告</h2>
+                                <div className="h-px flex-1 bg-gray-200"></div>
+                            </div>
+                            <div className="flex gap-6 overflow-x-auto pb-6 no-scrollbar">
+                                {MERCH_DATA.map(item => (
+                                    <a key={item.id} href={item.link} className="flex-none ml-1 mt-2 w-72 bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden hover:ring-4 hover:ring-indigo-600 transition-all group">
+                                        <div className="h-48 bg-gray-100 overflow-hidden relative">
+                                            <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                            <span className="absolute top-4 left-4 bg-indigo-600 text-white text-[10px] font-black px-2 py-1 rounded shadow-lg">{item.status}</span>
+                                        </div>
+                                        <div className="p-6">
+                                            <h4 className="font-black text-gray-800 mb-2 line-clamp-1 group-hover:text-indigo-600 transition-colors">{item.title}</h4>
+                                            <div className="flex items-center gap-2 text-gray-400 text-xs font-bold">
+                                                <Icon name="calendar" size={14} />
+                                                <span>{item.date}</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                ))}
+                            </div>
+                        </section>
                     </main>
+
+                    {/* 頁尾 */}
+                    <footer className="bg-white border-t border-gray-100 py-12 px-6">
+                        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+                            <div className="text-center md:text-left">
+                                <h2 className="text-xl font-black tracking-tighter text-gray-900">幸研計劃</h2>
+                                <p className="text-gray-400 text-xs mt-1 font-medium">© 2026 All Rights Reserved.</p>
+                            </div>
+                            <div className="flex flex-col items-center md:items-end gap-2">
+                                <p className="text-gray-600 text-sm font-bold tracking-wider">
+                                    CREATED BY <span className="text-indigo-600 ml-1">央ヤン & Raphael</span>
+                                </p>
+                                {/* <div className="flex gap-4">
+                                    <a href="#" className="p-2 bg-gray-50 rounded-full text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all"><Icon name="instagram" size={18} /></a>
+                                    <a href="#" className="p-2 bg-gray-50 rounded-full text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all"><Icon name="twitter" size={18} /></a>
+                                </div> */}
+                            </div>
+                        </div>
+                    </footer>
 
                     {selectedCouple && <ImmersiveDetail couple={selectedCouple} onBack={() => setSelectedCouple(null)} />}
                 </div>
