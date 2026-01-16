@@ -284,20 +284,20 @@
                 cpName: "來世之章",
                 element: "詠年",
                 status: "尚未開始",
-                gradient: "from-pink-900 to-rose-300",
+                gradient: "from-rose-700 to-rose-300",
                 comicUrl: "https://example.com/comic/5",
                 imgURL: "img/詠年.png", /* 封面圖片網址 */
                 story: "上一世我用生命歌頌你的名字，下一世我不會再錯過你。穿越了地獄，白詠與宋起年再度在人間相逢，轉世的他們認的出彼此嗎？",
                 top: { 
                     name: "白 詠", 
-                    imageUrl: "img/角色圖/白詠.png",
+                    imageUrl: "img/角色圖/白詠.gif",
                     age: "28歲", height: "178cm", role: "自由工作者", 
                     tags: ["處女座", "偏執且強勢", "代表動物吸血蝙蝠"], 
                     desc: "嚴肅的人，喜歡深究問題，在音樂領域具有相當的執念與興趣。主要職業是攝影。個性有些難以捉摸。" 
                 },
                 bottom: { 
                     name: "宋 起年", 
-                    imageUrl: "img/角色圖/宋起年.png",
+                    imageUrl: "img/角色圖/宋起年.gif",
                     age: "26歲", height: "175cm", role: "診所營養師", 
                     tags: ["天秤座", "濫好人", "代表動物山雀"], 
                     desc: "好好先生，神經大條，喜愛成就他人的類型。很容易感到自卑，焦慮時依賴吃糖果舒壓。因自身個性，會莫名被反骨類型的人吸引，情感上處於弱勢。" 
@@ -346,7 +346,8 @@
             const styles = {
                 "連載中": "bg-emerald-500/90 text-white animate-pulse-soft",
                 "尚未開始": "bg-orange-500/90 text-white",
-                "已完結": "bg-gray-600/90 text-white"
+                "已完結": "bg-gray-600/90 text-white",
+                "彩蛋": "bg-indigo-600 text-white"
             };
             
             const sizeClass = size === "small" ? "px-1.5 py-0.5 text-[8px]" : "px-2 py-1 text-[10px]";
@@ -408,7 +409,10 @@
                     </div>
                     <div className="flex-1 container mx-auto px-4 py-8 pb-20">
                         <div className="text-center max-w-3xl mx-auto mb-12">
-                            <h1 className="text-4xl md:text-6xl font-black text-gray-900 mb-6 tracking-tighter">{couple.cpName}</h1>
+                            <div className="flex items-center justify-center gap-4 mb-6">
+                                <h1 className="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter">{couple.cpName}</h1>
+                                <StatusBadge status={couple.status} />
+                            </div>
                             <p className="text-sm md:text-base text-gray-600 leading-relaxed italic px-8 py-4 bg-gray-100 rounded-3xl border-l-2 border-r-2 border-gray-600">{couple.story}</p>
                         </div>
                         <div className="flex flex-col lg:flex-row items-stretch justify-center gap-12 lg:gap-0 max-w-7xl mx-auto">
@@ -418,9 +422,16 @@
                             </div>
                             <CharacterBox charData={couple.bottom} type="BOTTOM" gradient={couple.gradient} />
                         </div>
-                        <div className="mt-16 flex justify-center">
-                            <a href={couple.comicUrl} target="_blank" className={`flex items-center gap-4 py-5 px-14 rounded-2xl text-white font-black text-xl shadow-2xl hover:scale-105 transition-all bg-gradient-to-r ${couple.gradient}`}>
+                        {/* 按鈕組區塊 */}
+                        <div className="mt-16 flex flex-col sm:flex-row justify-center items-center gap-4 px-6">
+                            {/* 主按鈕：開始閱讀漫畫 */}
+                            <a href={couple.comicUrl} target="_blank" className={`w-full sm:w-auto flex items-center justify-center gap-4 py-5 px-10 rounded-2xl text-white font-black text-lg shadow-2xl border-2 border-gray-200 hover:border-indigo-600 hover:scale-105 transition-all bg-gradient-to-r ${couple.gradient}`}>
                                 <Icon name="book-open" /> <span>開始閱讀漫畫</span> <Icon name="external-link" size={18} />
+                            </a>
+                            
+                            {/* 次按鈕：番外篇 */}
+                            <a href={couple.extraUrl} target="_blank" className="w-full sm:w-auto flex items-center justify-center gap-4 py-5 px-10 rounded-2xl text-gray-700 bg-white border border-gray-200 font-black text-lg shadow-lg hover:bg-gray-50 hover:border-yellow-500 transition-all hover:scale-105">
+                                <Icon name="sparkles" className="text-yellow-500" /> <span>閱讀番外篇</span> <Icon name="external-link" size={18} className="text-gray-300" />
                             </a>
                         </div>
                     </div>
@@ -438,9 +449,16 @@
             return (
                 <div className="flex flex-col min-h-screen">
                     {/* 頂部標題區塊 */}
-                    <header className="container mx-auto px-6 py-12">
-                        <h1 className="text-5xl font-black tracking-tighter text-gray-900"><span className="text-indigo-600">幸研</span> 計畫</h1>
-                        <p className="text-gray-400 font-bold mt-2 tracking-[0.3em] text-[10px] uppercase">Character & Story Archive</p>
+                    <header className="container mx-auto px-6 py-12 flex flex-col md:flex-row md:justify-between md:items-end">
+                        <div>
+                            <h1 className="text-5xl font-black tracking-tighter text-gray-900"><span className="text-indigo-600">幸研</span> 計畫</h1>
+                            <p className="text-gray-400 font-bold mt-2 tracking-[0.3em] text-[10px] uppercase">Character & Story Archive</p>
+                        </div>
+                        <p className="text-gray-400 font-bold mt-2 tracking-[0.1em] text-[12px] md:border-l-2 md:border-gray-200 md:pl-5 mt-6" width="200">
+                            這裡是關於兩個好益友一起創造出的世界觀及故事。<br/>
+                            除了我們自己畫的開心以外，如果觀賞者也能因此感受到一點幸福，那我們是最開心的了。<br/>
+                            來到這裡的人謝謝你，看到這裡的人也謝謝你。
+                        </p>
                     </header>
 
                     <main className="flex-1 container mx-auto px-6">
@@ -487,6 +505,38 @@
                                     </div>
                                 </div>
                             ))}
+
+                            {/* 全員專用 */}
+                                <div className="group relative h-80 cursor-pointer overflow-hidden rounded-3xl shadow-lg transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:ring-4 hover:ring-indigo-600">
+                                    <a href="https://hsewiu.github.io/Alternative-Story/" target="_blank">
+                                        {/* 封面預覽圖*/}
+                                        <div className="absolute transition-transform duration-500 group-hover:scale-110">
+                                            <img 
+                                                src="img/全員.png"
+                                                className="h-auto w-auto object-contain drop-shadow-2xl" 
+                                                alt="Preview"
+                                            />
+                                        </div>
+
+                                        <div className="absolute inset-0 p-8 flex flex-col justify-between">
+                                            <div className="flex justify-between items-start">
+                                                <span className="rounded-full bg-white/20 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white backdrop-blur-md border border-white/30">
+                                                    全員
+                                                </span>
+                                                <Icon name="chevron-right" className="text-white opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0" />
+                                            </div>
+                                            
+                                            <div className="relative z-10">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <h3 className="text-3xl font-black text-white filter drop-shadow-2xl leading-tight">不分類全體故事</h3>
+                                                    <StatusBadge status="彩蛋" size="small" />
+                                                </div>
+                                                <p className="text-white/80 text-sm font-medium filter text-shadow-sm line-clamp-2 mb-4">幸研宇宙中的角色共同出場的短篇番外故事</p>
+                                                <div className="h-1 w-12 rounded-full bg-white/50 group-hover:w-full transition-all duration-500"></div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
                         </div>
                         {/* 周邊公告區塊 */}
                         <section className="mb-20">
