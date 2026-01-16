@@ -15,9 +15,26 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
-        body {
+        /*body {
             font-family: 'Noto Sans TC', sans-serif;
             background-color: #f9fafb;
+        }*/
+        @font-face {
+            font-family: "Cubic 11";
+            src:
+                url("https://cdn.jsdelivr.net/gh/ACh-K/Cubic-11@main/fonts/web/Cubic_11.woff2") format("woff2"),
+                url("https://cdn.jsdelivr.net/gh/ACh-K/Cubic-11@main/fonts/web/Cubic_11.woff") format("woff");
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body {
+            font-family: "Cubic 11", 'Noto Sans TC', system-ui, -apple-system, "Segoe UI", sans-serif;
+            background-color: #f9fafb;
+        }
+        h3 {
+            font-family: 'Noto Sans TC';
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -70,7 +87,7 @@
                 id: 2,
                 cpName: "王國之章",
                 element: "王王",
-                gradient: "from-purple-600 to-indigo-600",
+                gradient: "from-stone-500 to-slate-500",
                 comicUrl: "https://example.com/comic/2",
                 imgURL: "img/王王.png", // 封面圖片網址
                 story: "萬人之上的國王，背負著家族及人民的期望，但他卻有個難以啟齒的心之所向。",
@@ -93,7 +110,7 @@
                 id: 3,
                 cpName: "桀驁之章",
                 element: "攔禾",
-                gradient: "from-blue-400 to-cyan-400",
+                gradient: "from-sky-800 to-blue-800",
                 comicUrl: "https://example.com/comic/3",
                 imgURL: "img/攔禾.png", /* 封面圖片網址 */
                 story: "一個話嘮一個寡言，文化與境遇的不同催生出一段苦痛又甜蜜的故事。",
@@ -116,7 +133,7 @@
                 id: 4,
                 cpName: "宇航之章",
                 element: "空真",
-                gradient: "from-yellow-400 to-amber-500",
+                gradient: "from-cyan-300 to-emerald-300",
                 comicUrl: "https://example.com/comic/4",
                 imgURL: "img/空真.png", /* 封面圖片網址 */
                 story: "青春的高中校園，因一場惡作劇而交織兩個人，一場年上年下的砂糖劇！",
@@ -139,7 +156,7 @@
                 id: 5,
                 cpName: "生徒之章",
                 element: "修花",
-                gradient: "from-pink-400 to-rose-500",
+                gradient: "from-blue-900 to-sky-700",
                 comicUrl: "https://example.com/comic/5",
                 imgURL: "img/修花.png", /* 封面圖片網址 */
                 story: "不論是身份階級還是戀情都打破世俗的禁忌，活在體制內的壓抑的愛該何去何從？",
@@ -162,7 +179,7 @@
                 id: 6,
                 cpName: "和諧之章",
                 element: "茂優",
-                gradient: "from-pink-400 to-rose-500",
+                gradient: "from-indigo-900 to-gray-800",
                 comicUrl: "https://example.com/comic/5",
                 imgURL: "img/茂優.png", /* 封面圖片網址 */
                 story: "用音樂搭建起的愛語，一段壓抑淬鍊後戀情得以雨過天青嗎？",
@@ -185,7 +202,7 @@
                 id: 7,
                 cpName: "琥珀之章",
                 element: "紀悠",
-                gradient: "from-pink-400 to-rose-500",
+                gradient: "from-blue-700 to-teal-500",
                 comicUrl: "https://example.com/comic/5",
                 imgURL: "img/紀悠.png", /* 封面圖片網址 */
                 story: "忘年之交適用於愛情嗎？因為實習作業認識了相野悠生的出村紀人，治癒的年上年下戀情如何開展...",
@@ -208,7 +225,7 @@
                 id: 8,
                 cpName: "花見之章",
                 element: "柚唯",
-                gradient: "from-pink-400 to-rose-500",
+                gradient: "from-rose-400 to-pink-700",
                 comicUrl: "https://example.com/comic/5",
                 imgURL: "img/柚唯.png", /* 封面圖片網址 */
                 story: "跨國的際遇。某日褚唯家裡的花店出現的騷亂，讓他遇見了現役刑警瀨川柚樹...",
@@ -231,7 +248,7 @@
                 id: 9,
                 cpName: "生命之章",
                 element: "凡易",
-                gradient: "from-pink-400 to-rose-500",
+                gradient: "from-violet-800 to-purple-950",
                 comicUrl: "https://example.com/comic/5",
                 imgURL: "img/凡易.png", /* 封面圖片網址 */
                 story: "生與死的命題，不幸的開端帶來幸福的種子，狄凡與鄒易的電波怪奇物語。",
@@ -254,7 +271,7 @@
                 id: 10,
                 cpName: "來世之章",
                 element: "詠年",
-                gradient: "from-pink-400 to-rose-500",
+                gradient: "from-pink-900 to-rose-300",
                 comicUrl: "https://example.com/comic/5",
                 imgURL: "img/詠年.png", /* 封面圖片網址 */
                 story: "上一世我用生命歌頌你的名字，下一世我不會再錯過你。穿越了地獄，白詠與宋起年再度在人間相逢，轉世的他們認的出彼此嗎？",
@@ -362,7 +379,7 @@
                 <div className="min-h-screen pb-20">
                     <header className="container mx-auto px-6 py-12">
                         <h1 className="text-5xl font-black tracking-tighter text-gray-900"><span className="text-indigo-600">幸研</span> 計畫</h1>
-                        <p className="text-gray-400 font-bold mt-2 tracking-[0.2em] text-[10px] uppercase">Character & Story Archive</p>
+                        <p className="text-gray-400 font-bold mt-2 tracking-[0.3em] text-[10px] uppercase">Character & Story Archive</p>
                     </header>
 
                     <main className="container mx-auto px-6">
